@@ -1,0 +1,26 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="Location">
+
+        <EditTextPreference
+            app:key="city"
+            android:defaultValue="Cherkasy,ua"
+            app:title="@string/location"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/system_of_measurement">
+
+        <ListPreference
+            app:defaultValue="metric"
+            app:entries="@array/measure_system_entries"
+            app:entryValues="@array/measure_system_values"
+            app:key="units"
+            app:title="@string/measure_system_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

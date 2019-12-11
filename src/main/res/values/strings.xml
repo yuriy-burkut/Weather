@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Weather</string>
+    <string name="system_of_measurement">System of measurement</string>
+    <string name="settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Weather conditions-->
+    <string name="clouds">Clouds %d%%</string>
+    <string name="rain">Rain %f %s</string>
+    <string name="snow">Snow %f %s</string>
+
+   <!-- Weather Preferences -->
+    <string name="measure_system_title">Measure system</string>
+    <string name="clear">Clear</string>
+    <string name="location">Location</string>
+</resources>
