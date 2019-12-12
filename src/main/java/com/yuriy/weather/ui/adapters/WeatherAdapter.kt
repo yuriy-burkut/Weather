@@ -32,7 +32,7 @@ class WeatherAdapter(private val forecast: ForecastResponse) :
             id_humidity.text = item.main.humidity.toString()
             id_pressure.text = item.main.pressure.toString()
 
-            id_conditions.text = when (item.weatherInfo[0].main) {
+            id_conditions.text = when (item.weatherInfo[0].conditions) {
                 "Clouds" -> context.getString(R.string.clouds, item.clouds.all)
                 "Rain" -> context.getString(R.string.rain, item.rain?.h, "mm")
                 "Snow" -> context.getString(R.string.snow, item.snow?.h, "mm")

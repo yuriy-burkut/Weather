@@ -1,13 +1,13 @@
 package com.yuriy.weather.data
 
-import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
-import androidx.preference.PreferenceManager
 import com.yuriy.weather.application.AppClass
-import com.yuriy.weather.data.db.DBWeatherFetcher
+import com.yuriy.weather.data.db.WeatherDBFetcher
+import com.yuriy.weather.data.db.WeatherDBWriter
 import com.yuriy.weather.data.network.NetworkWeatherFetcher
 import com.yuriy.weather.data.network.responces.ForecastResponse
 import com.yuriy.weather.data.network.responces.WeatherResponse
+import com.yuriy.weather.preferences.SPHelper
 
 class WeatherRepository {
 
@@ -21,38 +21,55 @@ class WeatherRepository {
             }
     }
 
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(AppClass.applicationContext())
+    private val weatherData = MutableLiveData<WeatherResponse>()
+    private val forecastData = MutableLiveData<ForecastResponse>()
 
-    var currentWeather = fetchCurrentWeather()
-    var weatherForecast = fetchWeatherForecast()
+    private var location = SPHelper.getCity()
+    private var units = SPHelper.getUnits()
+
+    fun getCurrentWeather(): MutableLiveData<WeatherResponse> {
+        return fetchCurrentWeather(location, units)
+    }
+
+    fun getWeatherForecast(): MutableLiveData<ForecastResponse> {
+        return fetchWeatherForecast(location, units)
+    }
 
     fun updateData() {
-        currentWeather = fetchCurrentWeather()
-        weatherForecast = fetchWeatherForecast()
+        location = SPHelper.getCity()
+        units = SPHelper.getUnits()
+        weatherData.value = fetchCurrentWeather(location, units).value
+        forecastData.value = fetchWeatherForecast(location, units).value
     }
 
-    private fun fetchCurrentWeather(): MutableLiveData<WeatherResponse> {
-        return if (AppClass.isOnline()) {
-            NetworkWeatherFetcher.getInstance().fetchCurrentWeather(getCity(), getUnits())
+    private fun fetchCurrentWeather(
+        location: String,
+        units: String
+    ): MutableLiveData<WeatherResponse> {
+        if (AppClass.isOnline()) {
+            val weather = NetworkWeatherFetcher.getInstance().fetchCurrentWeather(location, units)
+            if (weather.value != null) {
+                WeatherDBWriter.writeCurrentWeather(weather.value!!)
+            }
+            return weather
         } else {
-            DBWeatherFetcher.getInstance().fetchCurrentWeather(getCity(), getUnits())
+
+            return WeatherDBFetcher.getInstance().fetchCurrentWeather(location, units)
+        }
+    }
+
+    private fun fetchWeatherForecast(
+        location: String,
+        units: String
+    ): MutableLiveData<ForecastResponse> {
+        val response = MutableLiveData<ForecastResponse>()
+        if (AppClass.isOnline()) {
+            return NetworkWeatherFetcher.getInstance().fetchWeatherForecast(location, units)
+        } else {
+            //WeatherDBFetcher.getInstance().fetchWeatherForecast(location, units)
+            return NetworkWeatherFetcher.getInstance().fetchWeatherForecast(location, units)
         }
 
-    }
-
-    private fun fetchWeatherForecast(): MutableLiveData<ForecastResponse> {
-        return if (AppClass.isOnline()) {
-            NetworkWeatherFetcher.getInstance().fetchWeatherForecast(getCity(), getUnits())
-        } else {
-            DBWeatherFetcher.getInstance().fetchWeatherForecast(getCity(), getUnits())
-        }
-    }
-
-    private fun getUnits(): String {
-        return sharedPreferences.getString("units", "metric") ?: "metric"
-    }
-
-    private fun getCity(): String {
-        return sharedPreferences.getString("city" , "Cherkasy,ua") ?: "Cherkasy,ua"
+        // return response
     }
 }

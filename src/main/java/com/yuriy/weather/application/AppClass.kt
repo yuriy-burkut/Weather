@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import com.yuriy.weather.data.db.WeatherDbHelper
 
 class AppClass : Application() {
 
@@ -13,6 +14,7 @@ class AppClass : Application() {
 
     companion object {
         private var instance : AppClass? = null
+        private var dbHelper : WeatherDbHelper? = null
 
         fun applicationContext() : Context {
             return instance!!.applicationContext
@@ -26,9 +28,13 @@ class AppClass : Application() {
             return networkInfo != null && networkInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
         }
 
+        fun getDbHelper() : WeatherDbHelper {
+            return dbHelper!!
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
+        dbHelper = WeatherDbHelper(applicationContext)
     }
 }

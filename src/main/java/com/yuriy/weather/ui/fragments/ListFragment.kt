@@ -35,8 +35,8 @@ class ListFragment : Fragment() {
             ViewModelProviders.of(this)[WeatherViewModel::class.java]
         } ?: throw Exception("Invalid Activity")
 
-        viewModel.weatherForecast.observe(this, Observer {response ->
-            initializeRecyclerView(response)
+        viewModel.getForecast().observe(this, Observer {forecast ->
+            initializeRecyclerView(forecast)
         })
 
     }

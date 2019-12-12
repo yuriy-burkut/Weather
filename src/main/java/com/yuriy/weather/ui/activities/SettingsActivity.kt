@@ -1,13 +1,15 @@
 package com.yuriy.weather.ui.activities
 
-import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.yuriy.weather.R
+import com.yuriy.weather.application.AppClass
 import com.yuriy.weather.data.WeatherRepository
 
-class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsActivity : AppCompatActivity(), Preference.OnPreferenceChangeListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,11 +19,15 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
             .replace(R.id.settings, SettingsFragment())
             .commit()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        Toast.makeText(AppClass.applicationContext(), "Test toast", Toast.LENGTH_LONG).show()
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+    override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         WeatherRepository.getInstance().updateData()
+        return true
     }
+
 
     class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

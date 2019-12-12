@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         if (id_main_fragment_container != null) {
 
-            viewModel.currentWeather
+            viewModel.getWeather()
                 .observe(this, Observer { weather ->
                     id_current_temp.text = weather.main.temp.roundToInt().toString().plus("\u2103")
                     id_city.text = weather.city

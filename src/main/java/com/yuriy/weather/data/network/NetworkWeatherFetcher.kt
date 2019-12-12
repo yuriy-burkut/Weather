@@ -24,6 +24,7 @@ class NetworkWeatherFetcher : WeatherFetcher {
             }
     }
 
+
     override fun fetchCurrentWeather(
         location: String,
         units: String
